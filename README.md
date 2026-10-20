@@ -2,6 +2,17 @@
 
 给 DeepSeek Harness 加一个「重启」按钮：点一下左侧栏的 **⟳**，整个应用自动关闭并重新启动。
 
+> **English** — A one-click restart button for DeepSeek Harness. Click the **⟳** glyph in the sidebar panel list and the whole application closes and relaunches itself. Useful after installing or updating plugins, which only take effect after a restart. The desktop shell exposes no restart IPC to plugins (only `shutdown`, `quit-inspection` and `update-tasks`), so the restart is performed by a two-stage launcher that escapes the Electron job object — see [工作原理](#工作原理) below.
+
+## 主要功能
+
+| | |
+|---|---|
+| **一键重启** | 单击侧栏 ⟳ 图标立即重启，无二次确认，从点击到新窗口出现约 3–4 秒 |
+| **可见即用** | 同时注册原生侧栏面板；若宿主不提供槽位服务，自动降级为右下角浮动按钮 |
+| **不残留窗口** | 重启脚本以 `conhost --headless` 运行，不留下控制台窗口 |
+| **失败可降级** | WMI 被禁用时自动改为「结束 Host」，由 Electron 弹出自带的重启确认框 |
+
 ## 为什么需要它
 
 DSH 的插件更新之后需要重启应用才生效，但桌面版没有提供重启入口——主进程只接受 `shutdown` / `quit-inspection` / `update-tasks` 三种 IPC 消息，**没有 restart**，插件无法请求外壳重启。这个插件补上了这个入口。
